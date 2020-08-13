@@ -86,7 +86,7 @@ type
     # reRepRange
     min*, max*: int16
     # reInSet, reNotSet
-    cps*: HashSet[Rune]
+    cps*: seq[Rune]
     ranges*: seq[Slice[Rune]]  # todo: interval tree
     shorthands*: seq[Node]
     # reUCC, reNotUCC
@@ -115,7 +115,7 @@ template initSetNodeImpl(result: var Node, k: NodeKind) =
   result = Node(
     kind: k,
     cp: "#".toRune,
-    cps: initHashSet[Rune](2),
+    cps: @[],
     ranges: @[],
     shorthands: @[])
 

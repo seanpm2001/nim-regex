@@ -94,14 +94,14 @@ func newSubmatches*(size: int): Submatches {.inline.} =
 when defined(release):
   {.push checks: off.}
 
-func `[]`*(sm: Submatches, i: int): PState {.inline.} =
+func `[]`*(sm: Submatches, i: int): lent PState {.inline.} =
   assert i < sm.si
   sm.sx[i]
 
 func hasState*(sm: Submatches, n: int16): bool {.inline.} =
   sm.ss[n] < sm.si and sm.sx[sm.ss[n]].ni == n
 
-func add*(sm: var Submatches, item: PState) {.inline.} =
+func add*(sm: var Submatches, item: sink PState) {.inline.} =
   assert(not sm.hasState(item.ni))
   assert sm.si <= sm.sx.len
   if (sm.si == sm.sx.len).unlikely:
@@ -116,7 +116,7 @@ func len*(sm: Submatches): int {.inline.} =
 func clear*(sm: var Submatches) {.inline.} =
   sm.si = 0
 
-iterator items*(sm: Submatches): PState {.inline.} =
+iterator items*(sm: Submatches): lent PState {.inline.} =
   for i in 0 .. sm.len-1:
     yield sm.sx[i]
 

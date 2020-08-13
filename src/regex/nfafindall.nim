@@ -68,7 +68,7 @@ func len(ms: Matches): int {.inline.} =
 
 # XXX make it log(n)? altough this does
 #     not add to the time complexity
-func add(ms: var Matches, m: MatchItem) {.inline.} =
+func add(ms: var Matches, m: sink MatchItem) {.inline.} =
   ## Add `m` to `ms`. Remove all overlapped matches.
   var size = 0
   for i in countdown(ms.len-1, 0):
@@ -105,7 +105,7 @@ func clear(ms: var RegexMatches) {.inline.} =
   ms.m.clear()
   ms.c.setLen 0
 
-iterator bounds*(ms: RegexMatches): Slice[int] {.inline.} =
+iterator bounds*(ms: RegexMatches): lent Slice[int] {.inline.} =
   for i in 0 .. ms.m.len-1:
     yield ms.m.s[i].bounds
 
@@ -197,7 +197,7 @@ func findSomeImpl*(
   ms: var RegexMatches,
   start: Natural = 0,
   flags: set[MatchFlag] = {}
-): int =
+): int {.inline.} =
   template smA: untyped = ms.a
   initMaybeImpl(ms, regex)
   ms.clear()

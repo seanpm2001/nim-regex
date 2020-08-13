@@ -9,7 +9,11 @@ import nodetype
 import common
 
 func isWord*(r: Rune): bool {.inline.} =
-  utmWord in unicodeTypes(r)
+  ('a'.ord <= r.ord and r.ord <= 'z'.ord) or
+  ('A'.ord <= r.ord and r.ord <= 'Z'.ord) or
+  ('0'.ord <= r.ord and r.ord <= '9'.ord) or
+  (r.ord == '_'.ord) or
+  (r.ord > 128'i32 and utmWord in unicodeTypes(r))
 
 func isWordAscii(r: Rune): bool {.inline.} =
   ## return ``true`` if the given
@@ -80,7 +84,16 @@ func contains(sr: seq[Slice[Rune]], r: Rune): bool {.inline.} =
       break
 
 func isWhiteSpace(r: Rune): bool {.inline.} =
-  utmWhiteSpace in unicodeTypes(r)
+  case r.int
+  of ' '.ord,
+      '\t'.ord,
+      '\L'.ord,
+      '\r'.ord,
+      '\f'.ord,
+      '\v'.ord:
+    true
+  else:
+    r.ord > 128'i32 and utmWhiteSpace in unicodeTypes(r)
 
 func isWhiteSpaceAscii(r: Rune): bool {.inline.} =
   case r.int
@@ -117,7 +130,7 @@ func match*(n: Node, r: Rune): bool {.inline.} =
   ## match for ``Node`` of matchable kind.
   ## Return whether the node matches
   ## the current character or not
-  if r.int < 0:
+  if r.ord < 0:
     return n.kind == reEOE
   case n.kind
   of reEOE:
@@ -140,7 +153,10 @@ func match*(n: Node, r: Rune): bool {.inline.} =
       r in n.ranges)
     if not matches:
       for nn in n.shorthands:
-        matches = nn.match(r)
+        matches = case nn.kind:
+        of reWhiteSpace: r.isWhiteSpace()
+        of reWord: r.isWord()
+        else: nn.match(r)
         if matches: break
     ((matches and n.kind == reInSet) or
      (not matches and n.kind == reNotSet))
