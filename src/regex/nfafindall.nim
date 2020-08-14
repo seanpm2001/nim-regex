@@ -361,6 +361,7 @@ func findSomeOptImpl*(
     doAssert i > i2; i2 = i
     #debugEcho "lit=", opt.lit
     #debugEcho "i=", i
+    limit = i
     let litIdx = text.find(opt.lit.char, i)
     if litIdx == -1:
       return -1
