@@ -228,19 +228,23 @@ func eRemoval*(eNfa: Enfa): Nfa {.raises: [].} =
     teClosure(closure, eNfa, qa, processing)
     doAssert statesMap[qa] > -1
     result.s[statesMap[qa]].next.setLen 0
+    let tLenOld = result.t.len
     for qb, eTransitions in closure.items:
       for eti in eTransitions:
         if statesMap[eti] == -1:
           result.s.add eNfa.s[eti]
           statesMap[eti] = result.s.len.int16-1
         result.s[statesMap[qa]].next.add statesMap[eti]
+        result.t.add statesMap[eti]
       if statesMap[qb] == -1:
         result.s.add eNfa.s[qb]
         statesMap[qb] = result.s.len.int16-1
       result.s[statesMap[qa]].next.add statesMap[qb]
+      result.t.add statesMap[qb]
       if qb notin qu:
         qu.incl qb
         qw.addFirst qb
+    result.s[statesMap[qa]].next2 = tLenOld .. result.t.len-1
 
 func reverse(eNfa: Enfa): Enfa =
   template state0: untyped = int16(eNfa.s.len-1)

@@ -149,10 +149,10 @@ func diverge*(capts: var Capts3, captIdx: CaptIdx): CaptIdx =
 func recycle*(capts: var Capts3) =
   ## Free recyclable entries
   ## Set initial/keepAlive entries to recyclable
-  capts.free.setLen 0
+  #capts.free.setLen 0
   for i, state in mpairs capts.states:
-    if state == stsRecyclable or
-        state == stsRecycled:
+    if state == stsRecyclable: # or
+        #state == stsRecycled:
       capts.free.add i.int16
       state.to stsRecycled
     if state == stsInitial or

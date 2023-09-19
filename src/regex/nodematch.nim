@@ -7,9 +7,6 @@ import pkg/unicodedb/types as utypes
 import ./types
 import ./common
 
-func isWord(r: Rune): bool {.inline.} =
-  utmWord in unicodeTypes(r)
-
 func isDecimal(r: Rune): bool {.inline.} =
   utmDecimal in unicodeTypes(r)
 
@@ -24,6 +21,16 @@ func isWordAscii(r: Rune): bool {.inline.} =
     true
   else:
     false
+
+func isWord(r: Rune): bool {.inline.} =
+  case r.int
+  of 'A'.ord .. 'Z'.ord,
+      'a'.ord .. 'z'.ord,
+      '0'.ord .. '9'.ord,
+      '_'.ord:
+    true
+  else:
+    utmWord in unicodeTypes(r)
 
 template isWordBoundaryImpl(r, nxt, isWordProc): bool =
   (r.int > -1 and isWordProc(r)) xor

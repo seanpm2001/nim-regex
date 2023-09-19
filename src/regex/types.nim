@@ -24,6 +24,7 @@ type
     s*: seq[Node]
   Nfa* = object
     s*: seq[Node]
+    t*: seq[int16]
 
   # nodetype.nim
   Flag* = enum
@@ -92,6 +93,7 @@ type
     kind*: NodeKind
     cp*: Rune
     next*: seq[int16]
+    next2*: Slice[int]
     isGreedy*: bool
     uid*: NodeUid
     # reGroupStart, reGroupEnd

@@ -72,7 +72,8 @@ template nextStateTpl(bwMatch = false): untyped {.dirty.} =
     when bwMatch: i .. bounds.b else: bounds.a .. i-1
   template captElm: untyped =
     capts[captx, nfa.s[nt].idx]
-  template nt: untyped = nfa.s[n].next[nti]
+  #template nt: untyped = nfa.s[n].next[nti]
+  template nt: untyped = nfa.t[nti]
   template ntn: untyped = nfa.s[nt]
   smB.clear()
   for n, capt, bounds in items smA:
@@ -82,8 +83,10 @@ template nextStateTpl(bwMatch = false): untyped {.dirty.} =
       if not smB.hasState n:
         smB.add (n, capt, bounds)
       break
-    var nti = 0
-    while nti <= nfa.s[n].next.len-1:
+    var nti = nfa.s[n].next2.a
+    while nti <= nfa.s[n].next2.b:
+    #var nti = 0
+    #while nti <= nfa.s[n].next.len-1:
       matched = true
       captx = capt
       while isEpsilonTransition(ntn):
